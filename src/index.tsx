@@ -25,7 +25,7 @@ const Container = styled.div`
 type initialData = {
   tasks: Object,
   columns: {
-    taskIds: any,
+    taskIds: [],
   },
   columnOrder: never,
   numBucket: number,
@@ -53,12 +53,14 @@ const App: React.FC = () => {
       console.log('draggableId: ', draggableId)
       console.log('Destination Index: ', destination.index)
       const newOrder = [...newColumnOrder.slice(0, destination.index), draggableId, ...newColumnOrder.slice(destination.index)]
+      // newColumnOrder.splice(destination.index, 0, draggableId) // Old array manipulation 
       console.log(newOrder)
 
       const newState = {
         ...state,
         columnOrder: newOrder,
       }
+      // @ts-ignore
       setState(newState)
       return
     }
@@ -117,7 +119,7 @@ const App: React.FC = () => {
     setState((prevState) => {
       return { ...prevState, numBucket: state.numBucket++ }
     })
-
+    // @ts-ignore
     setState((prevState) => {
       return {
         ...prevState,
@@ -185,8 +187,9 @@ const App: React.FC = () => {
             {
               state.columnOrder.map((columnId, index) => {
                 const column = state.columns[columnId]
+                // @ts-ignore
                 const tasks = column.taskIds && column.taskIds.map(taskId => state.tasks[taskId])
-
+                // @ts-ignore
                 return <Column key={column.id} column={column} tasks={tasks} index={index} handleCards={handleCards} />
               })
             }
