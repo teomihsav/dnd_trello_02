@@ -38,8 +38,7 @@ const Column: React.FC<Props> = (props) => {
 
                     <hr style={{ backgroundColor: 'lightsteelblue' }} />
                     {/* <button onClick={() => props.handleCards(props.column.id.split('-')[1])} >Add Card</button> */}
-                    <EditInput handleEditCard={props.handleEditCard} card={true} bucketId={(props.column.id)} />
-
+                    <EditInput handleEditCard={props.handleEditCard} bucketCard={'card'} bucketId={(props.column.id)} />
 
                 </Title>
                 <Droppable droppableId={props.column.id} type='task'>

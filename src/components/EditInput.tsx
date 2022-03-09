@@ -7,7 +7,7 @@ import { AiOutlineEdit } from "react-icons/ai"
 const EditInput = (props) => {
 
     const [toggle, setToggle] = useState<boolean>(true)
-    const [name, setName] = React.useState()
+    const [name, setName] = React.useState(undefined)
 
     useEffect(() => {
         console.log('Render: ')
@@ -23,13 +23,15 @@ const EditInput = (props) => {
     const handleExit = (event) => {
         if (event.key === 'Enter' || event.key === 'Escape') {
             setToggle(true)
-            if (props.card === true) {
+            if (props.bucketCard === 'card') {
                 console.log('Bucket ID: ', props.bucketId);
-                props.handleEditCard(name, props.bucketId)
+                console.log('CARD BucketCard: ', props.bucketCard);
+                props.handleEditCard(name, props.bucketId, props.bucketCard)
                 event.preventDefault()
                 event.stopPropagation()
             } else {
-                props.handleEdit(name)
+                console.log('BUCKET BucketCard: ', props.bucketCard);
+                props.handleEdit(name, props.bucketCard)
                 event.preventDefault()
                 event.stopPropagation()
             }

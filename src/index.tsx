@@ -41,6 +41,7 @@ const App: React.FC = () => {
   const [text, setText] = React.useState()
   const [textCard, setTextCard] = React.useState()
   const [bucketId, setBucketId] = React.useState()
+  const [bucketCard, setBucketCard] = React.useState()
 
   useEffect(() => {
     setState((prevState) => {
@@ -50,10 +51,10 @@ const App: React.FC = () => {
       return { ...prevState, numCard: Object.keys(state.tasks).length }
     })
     console.log('TaskIds: ', text)
-    if (text !== undefined) {
+    if (bucketCard === 'bucket') {
       handleBuckets(text)
     }
-    if (textCard !== undefined) {
+    if (bucketCard === 'card') {
       if (state.columns) {
         handleCards(text, textCard, bucketId)
       }
@@ -158,10 +159,10 @@ const App: React.FC = () => {
     })
   }
   const handleCards = (text, textCard, bucketId) => {
-    console.log('Card Data: ',text, textCard, bucketId)
+    console.log('Card Data: ', text, textCard, bucketId)
 
     setState((prevState) => {
-      return { ...prevState, numCard: state.numCard++}
+      return { ...prevState, numCard: state.numCard++ }
     })
     setState((prevState) => {
       return {
@@ -188,13 +189,15 @@ const App: React.FC = () => {
 
   console.log(state)
 
-  const handleEdit = (textFromInput) => {
+  const handleEdit = (textFromInput, bucketcard) => {
     console.log('Text From Bucket Function:', textFromInput)
+    setBucketCard(bucketcard)
     setText(textFromInput)
     console.log('Text Bucket: ', text)
   }
-  const handleEditCard = (textFromInputCard, bucketId) => {
+  const handleEditCard = (textFromInputCard, bucketId, bucketcard) => {
     console.log('Text From Card Function:', textFromInputCard)
+    setBucketCard(bucketcard)
     setBucketId(bucketId)
     setTextCard(textFromInputCard)
     console.log('Text Card: ', textCard)
@@ -205,7 +208,7 @@ const App: React.FC = () => {
     </div>
     <button onClick={handleBuckets} > Add Bucket </button> */}
 
-    <EditInput handleEdit={handleEdit} />
+    <EditInput handleEdit={handleEdit} bucketCard={'bucket'} />
 
     <DragDropContext onDragEnd={onDragEnd} >
       <Droppable
