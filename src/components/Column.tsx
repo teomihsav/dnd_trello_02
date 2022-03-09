@@ -8,6 +8,7 @@ import Task from './Task'
 
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 
+import EditInput from './EditInput'
 
 type Props = {
     column: {
@@ -19,9 +20,10 @@ type Props = {
     //     id: string,
     //     content:string,
     // },
-    tasks: any| any,
+    tasks: any | any,
 
-    handleCards: any
+    handleCards: any,
+    handleEditCard: any
 }
 
 const Column: React.FC<Props> = (props) => {
@@ -34,8 +36,10 @@ const Column: React.FC<Props> = (props) => {
                 <Title {...provided.dragHandleProps} >
                     {props.column.title}
 
-                    <hr style={{backgroundColor: 'lightsteelblue'}} />
-                    <button onClick={() => props.handleCards(props.column.id.split('-')[1])}>Add Card</button>
+                    <hr style={{ backgroundColor: 'lightsteelblue' }} />
+                    {/* <button onClick={() => props.handleCards(props.column.id.split('-')[1])} >Add Card</button> */}
+                    <EditInput handleEditCard={props.handleEditCard} card={true} bucketId={(props.column.id)} />
+
 
                 </Title>
                 <Droppable droppableId={props.column.id} type='task'>

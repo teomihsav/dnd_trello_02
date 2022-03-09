@@ -1,13 +1,21 @@
 
 
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 
 import { AiOutlineEdit } from "react-icons/ai"
 
-const EditInput = () => {
+const EditInput = (props) => {
 
     const [toggle, setToggle] = useState<boolean>(true)
-    const [name, setName] = useState<string>('Name me...')
+    const [name, setName] = React.useState()
+
+    useEffect(() => {
+        console.log('Render: ')
+        console.log('Name: ', name)
+        // if (name !== undefined) {
+        //     props.handleEditCard(name)
+        // }
+    }, [toggle])
 
     const handleTyping = (event) => {
         setName(event.target.value)
@@ -15,10 +23,19 @@ const EditInput = () => {
     const handleExit = (event) => {
         if (event.key === 'Enter' || event.key === 'Escape') {
             setToggle(true)
-            event.preventDefault()
-            event.stopPropagation()
+            if (props.card === true) {
+                console.log('Bucket ID: ', props.bucketId);
+                props.handleEditCard(name, props.bucketId)
+                event.preventDefault()
+                event.stopPropagation()
+            } else {
+                props.handleEdit(name)
+                event.preventDefault()
+                event.stopPropagation()
+            }
         }
     }
+
     return <Fragment>
         {
             toggle ? (
@@ -32,9 +49,10 @@ const EditInput = () => {
 
                 </div>
             ) : (
-                <input style={{  padding: '5px', margin: '5px', outline: 'none', borderColor: 'lightpink' }}
+                <input style={{ padding: '5px', margin: '5px', outline: 'none', borderColor: 'lightpink' }}
                     type="text"
-                    value={name}
+                    placeholder='Name me...'
+                    //  value={name}
                     onChange={handleTyping}
                     onKeyDown={handleExit}
                 />

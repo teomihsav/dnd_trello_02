@@ -12,6 +12,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
 import styled from 'styled-components'
 import './index.css'
+import { setTextRange } from 'typescript'
 
 const Container = styled.div`
   font-family: sans-serif;
@@ -25,9 +26,11 @@ const Container = styled.div`
 type initialData = {
   tasks: Object,
   columns: {
+    id: string,
+    title: string,
     taskIds: [],
   },
-  columnOrder: never,
+  columnOrder: [],
   numBucket: number,
   numCard: number,
 }
@@ -35,11 +38,28 @@ type initialData = {
 const App: React.FC = () => {
 
   const [state, setState] = React.useState(initialData)
+  const [text, setText] = React.useState()
+  const [textCard, setTextCard] = React.useState()
+  const [bucketId, setBucketId] = React.useState()
 
   useEffect(() => {
-    // console.log(state)
-    // console.log('TaskIds: ', state.columns.taskIds)
-  }, [state])
+    setState((prevState) => {
+      return { ...prevState, numBucket: state.columnOrder.length }
+    })
+    setState((prevState) => {
+      return { ...prevState, numCard: Object.keys(state.tasks).length }
+    })
+    console.log('TaskIds: ', text)
+    if (text !== undefined) {
+      handleBuckets(text)
+    }
+    if (textCard !== undefined) {
+      if (state.columns) {
+        handleCards(text, textCard, bucketId)
+      }
+    }
+    console.log('All Data: ', text, textCard, bucketId)
+  }, [text, textCard])
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result
@@ -53,7 +73,7 @@ const App: React.FC = () => {
       console.log('draggableId: ', draggableId)
       console.log('Destination Index: ', destination.index)
       const newOrder = [...newColumnOrder.slice(0, destination.index), draggableId, ...newColumnOrder.slice(destination.index)]
-      // newColumnOrder.splice(destination.index, 0, draggableId) // Old array manipulation 
+      // newColumnOrder.splice(destination.index, 0, draggableId) // Old array manipulati 
       console.log(newOrder)
 
       const newState = {
@@ -115,7 +135,7 @@ const App: React.FC = () => {
     setState(newState)
   }
 
-  const handleBuckets = () => {
+  const handleBuckets = (text) => {
     setState((prevState) => {
       return { ...prevState, numBucket: state.numBucket++ }
     })
@@ -127,9 +147,9 @@ const App: React.FC = () => {
           ...state.columns,
           ['column-' + state.numBucket]: {
             id: 'column-' + state.numBucket,
-            // title: 'Name me... ' + state.numBucket,
-            title: <EditInput />,
+            title: text,// Title Bucket
             taskIds: [],
+
           },
         },
         columnOrder: [...state.columnOrder, 'column-' + state.numBucket],
@@ -137,12 +157,12 @@ const App: React.FC = () => {
       }
     })
   }
+  const handleCards = (text, textCard, bucketId) => {
+    console.log('Card Data: ',text, textCard, bucketId)
 
-  const handleCards = (id) => {
     setState((prevState) => {
-      return { ...prevState, numCard: state.numCard++ }
+      return { ...prevState, numCard: state.numCard++}
     })
-
     setState((prevState) => {
       return {
         ...prevState,
@@ -150,15 +170,15 @@ const App: React.FC = () => {
           ...state.tasks,
           ['task-' + state.numCard]: {
             id: 'task-' + state.numCard,
-            content: <EditInput />,
+            content: textCard,
           },
         },
         columns: {
           ...state.columns,
-          ['column-' + id]: {
-            id: 'column-' + id,
-            title: <EditInput />,
-            taskIds: [...state.columns['column-' + id].taskIds, 'task-' + state.numCard],
+          [bucketId]: {
+            id: bucketId,
+            title: state.columns[bucketId].title,// Title Bucket
+            taskIds: [...state.columns[bucketId].taskIds, 'task-' + state.numCard],
           }
         },
         numCard: state.numCard,
@@ -166,12 +186,26 @@ const App: React.FC = () => {
     })
   }
 
+  console.log(state)
+
+  const handleEdit = (textFromInput) => {
+    console.log('Text From Bucket Function:', textFromInput)
+    setText(textFromInput)
+    console.log('Text Bucket: ', text)
+  }
+  const handleEditCard = (textFromInputCard, bucketId) => {
+    console.log('Text From Card Function:', textFromInputCard)
+    setBucketId(bucketId)
+    setTextCard(textFromInputCard)
+    console.log('Text Card: ', textCard)
+  }
   return <Fragment>
-    <button
-      onClick={handleBuckets}
-    >
-      Add Bucket
-    </button>
+    {/* <div onFocus={handleBuckets} >
+      <EditInput handleBuckets={handleBuckets}/>
+    </div>
+    <button onClick={handleBuckets} > Add Bucket </button> */}
+
+    <EditInput handleEdit={handleEdit} />
 
     <DragDropContext onDragEnd={onDragEnd} >
       <Droppable
@@ -190,7 +224,8 @@ const App: React.FC = () => {
                 // @ts-ignore
                 const tasks = column.taskIds && column.taskIds.map(taskId => state.tasks[taskId])
                 // @ts-ignore
-                return <Column key={column.id} column={column} tasks={tasks} index={index} handleCards={handleCards} />
+                return <Column key={column.id} column={column} tasks={tasks} index={index} handleEditCard={handleEditCard} />
+                // handleEditCard={handleEditCard}
               })
             }
             {provided.placeholder}
