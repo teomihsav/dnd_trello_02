@@ -7,7 +7,8 @@ import { AiOutlineEdit } from "react-icons/ai"
 const EditInput = (props) => {
 
     const [toggle, setToggle] = useState<boolean>(true)
-    const [name, setName] = React.useState(undefined)
+    const [name, setName] = React.useState('Name me...')
+    const [placeholder, setPlaceholder] = React.useState('Name me...')
 
     useEffect(() => {
         console.log('Render: ')
@@ -53,10 +54,10 @@ const EditInput = (props) => {
             ) : (
                 <input style={{ padding: '5px', margin: '5px', outline: 'none', borderColor: 'lightpink' }}
                     type="text"
-                    placeholder='Name me...'
-                    //  value={name}
+                    placeholder={placeholder}
                     onChange={handleTyping}
                     onKeyDown={handleExit}
+                    onFocus={() => setPlaceholder('')}
                 />
             )
         }
