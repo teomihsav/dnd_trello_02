@@ -7,16 +7,17 @@ import { AiOutlineEdit } from "react-icons/ai"
 const EditInput = (props) => {
 
     const [toggle, setToggle] = useState<boolean>(true)
-    const [name, setName] = React.useState('Name me...')
-    const [placeholder, setPlaceholder] = React.useState('Name me...')
+    const [name, setName] = React.useState(props.text ? props.text : 'Name me...')
+    const [placeholder, setPlaceholder] = React.useState(props.text ? props.text : 'Name me...')
 
     useEffect(() => {
         console.log('Render: ')
-        console.log('Name: ', name)
-        // if (name !== undefined) {
-        //     props.handleEditCard(name)
-        // }
+        console.log('Name From Input: ', name)
+        return () => {
+            // props.bucketId = undefined
+        }
     }, [toggle])
+
 
     const handleTyping = (event) => {
         setName(event.target.value)
@@ -25,13 +26,14 @@ const EditInput = (props) => {
         if (event.key === 'Enter' || event.key === 'Escape') {
             setToggle(true)
             if (props.bucketCard === 'card') {
-                console.log('Bucket ID: ', props.bucketId);
-                console.log('CARD BucketCard: ', props.bucketCard);
+                console.log('CARD Bucket ID: ', props.bucketId)
+                console.log('CARD BucketCard: ', props.bucketCard)
                 props.handleEditCard(name, props.bucketId, props.bucketCard)
                 event.preventDefault()
                 event.stopPropagation()
-            } else {
-                console.log('BUCKET BucketCard: ', props.bucketCard);
+            }
+            if (props.bucketCard === 'bucket') {
+                console.log('BUCKET BucketCard: ', props.bucketCard)
                 props.handleEdit(name, props.bucketCard)
                 event.preventDefault()
                 event.stopPropagation()
@@ -47,7 +49,7 @@ const EditInput = (props) => {
                     onClick={() => { setToggle(false) }}
                 >
 
-                    <span><AiOutlineEdit /></span>
+                    <span><AiOutlineEdit /> </span>
                     <span style={{ marginLeft: '10px' }}>{name}</span>
 
                 </div>
